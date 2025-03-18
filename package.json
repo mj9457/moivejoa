@@ -23,5 +23,13 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "@eslint/eslintrc": "^3"
-  }
+  },
+  "description": "movie information service",
+  "main": "index.js",
+  "author": {
+    "name": "Minjun Park",
+    "email": "nami47351@gmail.com",
+    "url": "https://handsomely-radish-d5c.notion.site/1b3db629c9628067bc65efc893f5898c?pvs=73"
+  },
+  "license": "ISC"
 }
