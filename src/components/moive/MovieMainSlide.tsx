@@ -27,7 +27,6 @@ interface MovieMainSlideProps {
 
 const MovieMainSlide = ({ movieData }: MovieMainSlideProps) => {
   const [thumbnail, setThumbnail] = useState<string | null>(null);
-  const [randomIndex, setRandomIndex] = useState<number>(0);
   const usedIndices = useRef<number[]>([]);
 
   useEffect(() => {
@@ -38,7 +37,6 @@ const MovieMainSlide = ({ movieData }: MovieMainSlideProps) => {
           newIndex = Math.floor(Math.random() * movieData.length);
         } while (usedIndices.current.includes(newIndex));
 
-        setRandomIndex(newIndex);
         setThumbnail(movieData[newIndex].backdrop_path);
 
         usedIndices.current.push(newIndex);

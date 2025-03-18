@@ -42,8 +42,8 @@ export default function MovieList({ movieData }: MovieDataListProps) {
                   width: "100%",
                   height: "100%",
                 }}
-                width={922}
-                height={518}
+                width={256}
+                height={384}
                 onError={() => console.error("Failed to load image")}
               />
             </div>
@@ -51,7 +51,9 @@ export default function MovieList({ movieData }: MovieDataListProps) {
               <h3 className="font-semibold mb-1 truncate">{item.title}</h3>
               <div className="flex justify-between text-sm text-gray-400">
                 <span>{item.release_date}</span>
-                <span className="text-yellow-500">★ {item.vote_average}</span>
+                <span className="text-yellow-500">
+                  ★ {item.vote_average.toFixed(1)}
+                </span>
               </div>
             </div>
           </div>
