@@ -105,6 +105,19 @@ interface Similar {
   vote_count: number;
 }
 
+interface VideoData {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
+}
+
 const useMovieDetail = (id: string) => {
   const {
     data: movieData,
@@ -130,6 +143,12 @@ const useMovieDetail = (id: string) => {
     error: similarError,
     fetchData: fetchSimilarData,
   } = useApi<Similar[]>();
+  const {
+    data: videoData,
+    loading: videoLoading,
+    error: videoError,
+    fetchData: fetchVideoData,
+  } = useApi<VideoData[]>();
 
   const getMovieDetailData = useCallback(async () => {
     try {
@@ -175,40 +194,80 @@ const useMovieDetail = (id: string) => {
     }
   }, [fetchSimilarData, id]);
 
+  const getMovieVideoData = useCallback(async () => {
+    try {
+      await fetchVideoData({
+        url: `/movies/${id}/videos`,
+        method: "GET",
+      });
+    } catch (error) {
+      console.error("Video API Error:", error);
+    }
+  }, [fetchVideoData, id]);
+
   useEffect(() => {
     getMovieDetailData();
     getMovieCreditsData();
     getMovieProvidersData();
     getMovieSimilarData();
+    getMovieVideoData();
   }, [
     getMovieDetailData,
     getMovieCreditsData,
     getMovieProvidersData,
     getMovieSimilarData,
+    getMovieVideoData,
   ]);
 
   const loading =
-    movieLoading || creditsLoading || providersLoading || similarLoading;
-  const error = movieError || creditsError || providersError || similarError;
+    movieLoading ||
+    creditsLoading ||
+    providersLoading ||
+    similarLoading ||
+    videoLoading;
+  const error =
+    movieError || creditsError || providersError || similarError || videoError;
 
-  return { movieData, creditsData, providersData, similarData, loading, error };
+  return {
+    movieData,
+    creditsData,
+    providersData,
+    similarData,
+    videoData,
+    loading,
+    error,
+  };
 };
 
 export default function MovieDetailPage({ params }: { params: IParams }) {
   const unwrappedParams = use(params);
   const id = unwrappedParams?.id;
 
-  const { movieData, creditsData, providersData, similarData, loading, error } =
-    useMovieDetail(id);
+  const {
+    movieData,
+    creditsData,
+    providersData,
+    similarData,
+    videoData,
+    loading,
+    error,
+  } = useMovieDetail(id);
 
   if (loading) return <div>Loading movie information...</div>;
   if (error) return <div>Error loading movie information</div>;
-  if (!movieData || !creditsData || !providersData || !similarData) return null;
+  if (
+    !movieData ||
+    !creditsData ||
+    !providersData ||
+    !similarData ||
+    !videoData
+  )
+    return null;
 
   return (
     <div>
       <Suspense>
-        <MovieInfo data={movieData} />
+        <MovieInfo movie={movieData} video={videoData} />
       </Suspense>
 
       <Suspense>

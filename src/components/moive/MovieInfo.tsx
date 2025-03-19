@@ -1,6 +1,7 @@
 import { convertMinutesToHoursAndMinutes } from "@/utils/clock";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
+import MovieVideoModal from "./MovieVideoModal";
 
 interface MovieData {
   adult: boolean;
@@ -51,13 +52,44 @@ interface MovieData {
   vote_count: number;
 }
 
-interface MovieInfoProps {
-  data: MovieData;
+interface VideoData {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
 }
 
-const MovieInfo = ({ data: movie }: MovieInfoProps) => {
+interface MovieInfoProps {
+  movie: MovieData;
+  video: VideoData[];
+}
+
+const MovieInfo = ({ movie, video }: MovieInfoProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const openVideoModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeVideoModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="bg-gray-900 text-white">
+      {isModalOpen && (
+        <MovieVideoModal
+          videos={video}
+          isOpen={isModalOpen}
+          onClose={closeVideoModal}
+        />
+      )}
+
       <section className="relative">
         {/* Backdrop Image */}
         <div className="h-[500px] relative">
@@ -129,7 +161,10 @@ const MovieInfo = ({ data: movie }: MovieInfoProps) => {
                 </div>
 
                 <div className="space-x-4 pt-0 md:pt-10">
-                  <button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-full inline-flex items-center gap-2 transition-colors">
+                  <button
+                    className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-full inline-flex items-center gap-2 transition-colors"
+                    onClick={openVideoModal}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-5 w-5"

@@ -84,7 +84,10 @@ const MovieMainSlide = ({ movieData }: MovieMainSlideProps) => {
       </div>
       <div className="container mx-auto px-4 h-full relative z-20 flex flex-col justify-center">
         <h1 className="text-4xl md:text-5xl font-bold max-w-2xl mb-6 text-white">
-          영화의 모든 것, {LOGO_NAME}에서 만나보세요
+          영화의 모든 것,
+        </h1>
+        <h1 className="text-4xl md:text-5xl font-bold max-w-2xl mb-6 text-white">
+          {LOGO_NAME}에서 만나보세요
         </h1>
         <p className="text-lg text-gray-300 max-w-xl mb-8">
           최신 영화 정보, 리뷰, 평점을 한 곳에서 확인하고 나만의 영화 컬렉션을

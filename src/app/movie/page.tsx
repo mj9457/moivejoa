@@ -1,10 +1,7 @@
-import MovieInfo from "@/components/moive/MovieInfo";
-
 const page = () => {
   return (
-    <div>
+    <div className="text-white">
       API URL: {process.env.NEXT_PUBLIC_API_BASE_URL}
-      <MovieInfo />
     </div>
   );
 };

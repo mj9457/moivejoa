@@ -1,4 +1,5 @@
 import { COUNTRY_CODE } from "@/constants/countryCode";
+import { convertMinutesToHoursAndMinutes } from "@/utils/clock";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -119,6 +120,7 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
     <div>
       {/* Content Tabs */}
       <section className="container mx-auto px-4 py-8">
+        {/* Info Nav */}
         <div className="border-b border-gray-700 mb-8">
           <nav className="flex space-x-8">
             <button
@@ -171,8 +173,128 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
             <div>
               <h2 className="text-2xl text-white font-bold mb-6 ">줄거리</h2>
               <p className="text-gray-300 leading-relaxed mb-12 text-lg">
-                {movie.overview}
+                {movie.overview || `None Data`}
               </p>
+
+              <div className="bg-gray-800 rounded-lg p-6 mb-10 overflow-x-auto">
+                <table className="w-full text-gray-300">
+                  <tbody>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white w-1/4">
+                        제목
+                      </td>
+                      <td className="py-3">
+                        {movie.title} ({movie.original_title})
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">
+                        개봉일
+                      </td>
+                      <td className="py-3">{movie.release_date}</td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">장르</td>
+                      <td className="py-3">
+                        {movie.genres.map((genre) => genre.name).join(", ")}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">
+                        상영 시간
+                      </td>
+                      <td className="py-3">
+                        {convertMinutesToHoursAndMinutes(movie.runtime)}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">
+                        제작 국가
+                      </td>
+                      <td className="py-3">
+                        {movie.production_countries
+                          .map((country) => country.name)
+                          .join(", ")}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">언어</td>
+                      <td className="py-3">
+                        {movie.spoken_languages
+                          .map((lang) => lang.name)
+                          .join(", ")}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">평점</td>
+                      <td className="py-3">
+                        <span className="text-yellow-500">★</span>{" "}
+                        {movie.vote_average.toFixed(1)} ({movie.vote_count}명
+                        참여)
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">
+                        제작사
+                      </td>
+                      <td className="py-3">
+                        {movie.production_companies
+                          .map((company) => company.name)
+                          .join(", ")}
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-700">
+                      <td className="py-3 pr-4 font-medium text-white">상태</td>
+                      <td className="py-3">{movie.status}</td>
+                    </tr>
+                    {movie.budget > 0 && (
+                      <tr className="border-b border-gray-700">
+                        <td className="py-3 pr-4 font-medium text-white">
+                          제작 예산
+                        </td>
+                        <td className="py-3">
+                          ${movie.budget.toLocaleString()}
+                        </td>
+                      </tr>
+                    )}
+                    {movie.revenue > 0 && (
+                      <tr className="border-b border-gray-700">
+                        <td className="py-3 pr-4 font-medium text-white">
+                          수익
+                        </td>
+                        <td className="py-3">
+                          ${movie.revenue.toLocaleString()}
+                        </td>
+                      </tr>
+                    )}
+                    {movie.tagline && (
+                      <tr className="border-b border-gray-700">
+                        <td className="py-3 pr-4 font-medium text-white">
+                          태그라인
+                        </td>
+                        <td className="py-3 italic">{movie.tagline}</td>
+                      </tr>
+                    )}
+                    {movie.homepage && (
+                      <tr>
+                        <td className="py-3 pr-4 font-medium text-white">
+                          홈페이지
+                        </td>
+                        <td className="py-3">
+                          <a
+                            href={movie.homepage}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-red-500 hover:text-red-400 transition-colors"
+                          >
+                            바로가기
+                          </a>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
               <h2 className="text-2xl text-white font-bold mb-6">
                 비슷한 작품
@@ -180,7 +302,7 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {similar.map((movie) => (
                   <Link href={`/movie/${movie.id}`} key={movie.id}>
-                    <div className="bg-gray-800 rounded-lg overflow-hidden transition-transform hover:-translate-y-2">
+                    <div className="bg-gray-800 text-white rounded-lg overflow-hidden transition-transform hover:-translate-y-2">
                       <div className="relative h-64 w-full">
                         <Image
                           src={movie.poster_path}
@@ -217,9 +339,12 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
           {/* Cast Tab */}
           {activeTab === "cast" && (
             <div>
-              <h2 className="text-2xl text-white font-bold mb-6">
+              <h2 className="text-2xl text-white font-bold mb-2">
                 주요 출연진
               </h2>
+              <p className="text-gray-500 leading-relaxed mb-6 text-lg">
+                이미지 클릭 시 배우를 검색합니다.
+              </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {credit.map((person, index) => (
                   <div
@@ -227,19 +352,24 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
                     className="bg-gray-800 rounded-lg overflow-hidden"
                   >
                     <div className="relative h-64 w-full">
-                      <Image
-                        src={person.profile_path}
-                        alt={person.name}
-                        style={{
-                          objectFit: "cover",
-                          position: "absolute",
-                          width: "100%",
-                          height: "100%",
-                        }}
-                        width={256}
-                        height={384}
-                        priority
-                      />
+                      <Link
+                        href={`https://www.google.com/search?q=${person.name}`}
+                        target="_blank"
+                      >
+                        <Image
+                          src={person.profile_path}
+                          alt={person.name}
+                          style={{
+                            objectFit: "cover",
+                            position: "absolute",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          width={256}
+                          height={384}
+                          priority
+                        />
+                      </Link>
                     </div>
                     <div className="p-4">
                       <h3 className="font-semibold mb-1 text-white">
@@ -311,7 +441,7 @@ const MovieContent = ({ movie, credit, provider, similar }: MovieInfoProps) => {
                       {countryData.flatrate &&
                       countryData.flatrate.length > 0 ? (
                         <div>
-                          <p className="text-gray-400 mb-2">정액제 스트리밍:</p>
+                          <p className="text-gray-400 mb-2">정액제 스트리밍</p>
                           <div className="flex flex-wrap gap-2">
                             {countryData.flatrate.map((service) => (
                               <a
